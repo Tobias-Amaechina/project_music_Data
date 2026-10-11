@@ -193,3 +193,24 @@ function songsListenedEveryDay(events) {
     )
     .map(songLabel);
 }
+
+// Question 7: genres ranked by number of listens.
+function topGenres(events) {
+  const counts = new Map();
+
+  for (const event of events) {
+    const song = getSong(event.song_id);
+
+    if (!song) continue;
+
+    counts.set(
+      song.genre,
+      (counts.get(song.genre) ?? 0) + 1
+    );
+  }
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([genre]) => genre);
+}
