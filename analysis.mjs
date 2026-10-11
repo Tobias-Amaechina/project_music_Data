@@ -167,3 +167,29 @@ function longestStreak(events) {
     length: maximumLength,
   };
 }
+
+// Question 6: songs listened to on every listening day.
+function songsListenedEveryDay(events) {
+  if (events.length === 0) return [];
+
+  const songsByDay = new Map();
+
+  for (const event of events) {
+    const day = event.timestamp.slice(0, 10);
+
+    if (!songsByDay.has(day)) {
+      songsByDay.set(day, new Set());
+    }
+
+    songsByDay.get(day).add(event.song_id);
+  }
+
+  const days = [...songsByDay.values()];
+  const firstDaySongs = days[0];
+
+  return [...firstDaySongs]
+    .filter(songID =>
+      days.every(daySongs => daySongs.has(songID))
+    )
+    .map(songLabel);
+}
