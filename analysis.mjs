@@ -115,3 +115,21 @@ function mostListenedArtist(events, byTime = false) {
       : totals.get(artists[0]),
   };
 }
+
+// Question 3: Friday night, 17:00 until Saturday 04:00.
+// The Saturday portion is 00:00 to before 04:00.
+function isFridayNight(event) {
+  const date = new Date(event.timestamp);
+  const day = date.getDay();
+  const seconds = date.getHours() * 3600 +
+    date.getMinutes() * 60 +
+    date.getSeconds();
+
+  const fridayEvening =
+    day === 5 && seconds >= 17 * 3600;
+
+  const saturdayEarly =
+    day === 6 && seconds < 4 * 3600;
+
+  return fridayEvening || saturdayEarly;
+}
