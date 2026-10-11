@@ -72,3 +72,21 @@ function formatDuration(seconds) {
 
   return `${remainingSeconds}s`;
 }
+
+// Questions 1 and 4: most-listened-to song.
+function mostListenedSong(events, byTime = false) {
+  const totals = byTime
+    ? listeningTimeBySong(events)
+    : countBy(events, event => event.song_id);
+
+  const ids = findMaximumKeys(totals);
+
+  if (ids.length === 0) return null;
+
+  return {
+    songs: songLabels(ids),
+    value: byTime
+      ? formatDuration(totals.get(ids[0]))
+      : totals.get(ids[0]),
+  };
+}
