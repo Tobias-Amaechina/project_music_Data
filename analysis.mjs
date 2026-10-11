@@ -214,3 +214,66 @@ function topGenres(events) {
     .slice(0, 3)
     .map(([genre]) => genre);
 }
+// Main function called by the frontend.
+export function analyseUser(userID) {
+  const events = getListenEvents(userID) ?? [];
+
+  if (events.length === 0) {
+    return { empty: true, answers: [] };
+  }
+
+  const fridayEvents = events.filter(isFridayNight);
+
+  const answers = [
+    {
+      question: "Most listened-to song (by number of listens)",
+      result: mostListenedSong(events),
+    },
+    {
+      question: "Most listened-to artist (by number of listens)",
+      result: mostListenedArtist(events),
+    },
+    {
+      question: "Most listened-to song on Friday nights (by listens)",
+      result: mostListenedSong(fridayEvents),
+    },
+    {
+      question: "Most listened-to song (by listening time)",
+      result: mostListenedSong(events, true),
+    },
+    {
+      question: "Most listened-to artist (by listening time)",
+      result: mostListenedArtist(events, true),
+    },
+    {
+      question: "Most listened-to song on Friday nights (by time)",
+      result: mostListenedSong(fridayEvents, true),
+    },
+    {
+      question: "Longest consecutive run of the same song",
+      result: longestStreak(events),
+    },
+    {
+      question: "Songs listened to every day",
+      result: songsListenedEveryDay(events),
+    },
+    {
+      question: "Top genres by number of listens",
+      result: topGenres(events),
+    },
+  ];
+
+  return {
+    empty: false,
+    answers: answers.filter(answer => {
+      const result = answer.result;
+
+      if (result === null) return false;
+      if (Array.isArray(result)) return result.length > 0;
+      if (result.songs) return result.songs.length > 0;
+      if (result.artists) return result.artists.length > 0;
+
+      return true;
+    }),
+  };
+}
