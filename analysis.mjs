@@ -90,3 +90,28 @@ function mostListenedSong(events, byTime = false) {
       : totals.get(ids[0]),
   };
 }
+
+// Questions 2 and 4: most-listened-to artist.
+function mostListenedArtist(events, byTime = false) {
+  const totals = new Map();
+
+  for (const event of events) {
+    const song = getSong(event.song_id);
+
+    if (!song) continue;
+
+    const value = byTime ? song.duration_seconds : 1;
+
+    totals.set(song.artist, (totals.get(song.artist) ?? 0) + value);
+  }
+  const artists = findMaximumKeys(totals);
+
+  if (artists.length === 0) return null;
+
+  return {
+    artists,
+    value: byTime
+      ? formatDuration(totals.get(artists[0]))
+      : totals.get(artists[0]),
+  };
+}
