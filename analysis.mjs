@@ -31,3 +31,8 @@ export function songLabel(songID) {
 
   return `${song.artist} - ${song.title}`;
 }
+
+// Format a list of song IDs for display.
+function songLabels(songIDs) {
+  return songIDs.map(songLabel);
+}
