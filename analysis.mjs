@@ -22,3 +22,12 @@ export function findMaximumKeys(counts) {
     .filter(([, value]) => value === maximum)
     .map(([key]) => key);
 }
+
+// Convert a song into a readable label.
+export function songLabel(songID) {
+  const song = getSong(songID);
+
+  if (!song) return "Unknown song";
+
+  return `${song.artist} - ${song.title}`;
+}
