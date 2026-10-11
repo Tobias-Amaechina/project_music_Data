@@ -133,3 +133,37 @@ function isFridayNight(event) {
 
   return fridayEvening || saturdayEarly;
 }
+
+// Question 5: longest run of the same song.
+function longestStreak(events) {
+  if (events.length === 0) return null;
+
+  let currentSong = events[0].song_id;
+  let currentLength = 0;
+  let maximumLength = 0;
+  let winningSongs = [];
+
+  for (const event of events) {
+    if (event.song_id === currentSong) {
+      currentLength++;
+    } else {
+      currentSong = event.song_id;
+      currentLength = 1;
+    }
+
+    if (currentLength > maximumLength) {
+      maximumLength = currentLength;
+      winningSongs = [currentSong];
+    } else if (
+      currentLength === maximumLength &&
+      !winningSongs.includes(currentSong)
+    ) {
+      winningSongs.push(currentSong);
+    }
+  }
+
+  return {
+    songs: songLabels(winningSongs),
+    length: maximumLength,
+  };
+}
