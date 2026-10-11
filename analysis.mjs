@@ -36,3 +36,22 @@ export function songLabel(songID) {
 function songLabels(songIDs) {
   return songIDs.map(songLabel);
 }
+
+// Total listening duration for each song.
+function listeningTimeBySong(events) {
+  const times = new Map();
+
+  for (const event of events) {
+    const song = getSong(event.song_id);
+
+    if (!song) continue;
+
+    times.set(
+      event.song_id,
+      (times.get(event.song_id) ?? 0) +
+        song.duration_seconds
+    );
+  }
+
+  return times;
+}
