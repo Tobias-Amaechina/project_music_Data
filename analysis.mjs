@@ -11,3 +11,14 @@ export function countBy(items, getKey) {
 
   return counts;
 }
+
+// Return every key tied for the highest value.
+export function findMaximumKeys(counts) {
+  if (counts.size === 0) return [];
+
+  const maximum = Math.max(...counts.values());
+
+  return [...counts.entries()]
+    .filter(([, value]) => value === maximum)
+    .map(([key]) => key);
+}
