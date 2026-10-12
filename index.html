@@ -1,8 +1,33 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <script type="module" src="script.mjs"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Data Analysis</title>
+    <script type="module" src="./script.mjs"></script>
   </head>
   <body>
+    <header>
+      <h1>Music Data Analysis</h1>
+      <p>Explore listening habits for each user.</p>
+    </header>
+
+    <main>
+      <label for="user-select">Select a user:</label>
+      <select id="user-select" name="user">
+        <option value="">Choose a user</option>
+      </select>
+
+      <section
+        id="results"
+        aria-live="polite"
+        aria-busy="false"
+        aria-labelledby="results-heading"
+      >
+        <h2 id="results-heading">Listening statistics</h2>
+        <p>Select a user to see their results.</p>
+      </section>
+    </main>
   </body>
 </html>
