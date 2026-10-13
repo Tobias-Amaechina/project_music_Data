@@ -1,8 +1,9 @@
 import { getSong, getListenEvents } from "./data.mjs";
 
 
-// Count occurrences by key
-function countBy(items, getKey) {
+// Utility helpers
+
+export function countBy(items, getKey) {
   const counts = new Map();
   for (const item of items) {
     const key = getKey(item);
@@ -11,8 +12,7 @@ function countBy(items, getKey) {
   return counts;
 }
 
-// Return all keys tied for maximum value
-function findMaximumKeys(counts) {
+export function findMaximumKeys(counts) {
   if (counts.size === 0) return [];
   const max = Math.max(...counts.values());
   return [...counts.entries()]
@@ -20,7 +20,6 @@ function findMaximumKeys(counts) {
     .map(([key]) => key);
 }
 
-// Convert song ID → readable label
 function songLabel(id) {
   const song = getSong(id);
   return song ? `${song.artist} - ${song.title}` : "Unknown song";
@@ -30,7 +29,6 @@ function songLabels(ids) {
   return ids.map(songLabel);
 }
 
-// Total listening time per song
 function listeningTimeBySong(events) {
   const totals = new Map();
   for (const event of events) {
@@ -44,7 +42,6 @@ function listeningTimeBySong(events) {
   return totals;
 }
 
-// Format seconds → readable duration
 function formatDuration(seconds) {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -56,7 +53,9 @@ function formatDuration(seconds) {
 }
 
 
-// Most listened song (count or time)
+  // Core analysis
+
+
 function mostListenedSong(events, byTime = false) {
   const totals = byTime
     ? listeningTimeBySong(events)
@@ -65,13 +64,13 @@ function mostListenedSong(events, byTime = false) {
   const ids = findMaximumKeys(totals);
   if (ids.length === 0) return null;
 
+  // UI rule: hide counts and durations
   return {
     songs: songLabels(ids),
-    value: undefined, // hide duration & hide count
+    value: undefined,
   };
 }
 
-// Most listened artist (count or time)
 function mostListenedArtist(events, byTime = false) {
   const totals = new Map();
 
@@ -86,39 +85,39 @@ function mostListenedArtist(events, byTime = false) {
   const artists = findMaximumKeys(totals);
   if (artists.length === 0) return null;
 
+  // UI rule: hide counts and durations
   return {
     artists,
-    value: undefined, // hide duration & hide count
+    value: undefined,
   };
 }
 
-// Friday night filter (Fri 17:00 → Sat 04:00)
 function isFridayNight(event) {
   const date = new Date(event.timestamp);
   const day = date.getDay();
   const seconds =
     date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
 
-  const friEvening = day === 5 && seconds >= 17 * 3600;
-  const satEarly = day === 6 && seconds < 4 * 3600;
+  const fridayEvening = day === 5 && seconds >= 17 * 3600;
+  const saturdayEarly = day === 6 && seconds < 4 * 3600;
 
-  return friEvening || satEarly;
+  return fridayEvening || saturdayEarly;
 }
-
-// Longest streak of same song
 function longestStreak(events) {
   if (events.length === 0) return null;
 
   let current = events[0].song_id;
-  let currentLen = 0;
-  let maxLen = 0;
-  let winners = [];
+  let currentLen = 1;
+  let maxLen = 1;
+  let winners = [current];
 
-  for (const event of events) {
-    if (event.song_id === current) {
+  for (let i = 1; i < events.length; i++) {
+    const id = events[i].song_id;
+
+    if (id === current) {
       currentLen++;
     } else {
-      current = event.song_id;
+      current = id;
       currentLen = 1;
     }
 
@@ -132,11 +131,11 @@ function longestStreak(events) {
 
   return {
     songs: songLabels(winners),
-    length: maxLen, // KEEP duration ONLY here
+    length: maxLen,
   };
 }
 
-// Songs listened every day
+
 function songsListenedEveryDay(events) {
   if (events.length === 0) return [];
 
@@ -156,7 +155,6 @@ function songsListenedEveryDay(events) {
     .map(songLabel);
 }
 
-// Top genres (up to 3)
 function topGenres(events) {
   const counts = new Map();
 
@@ -171,6 +169,9 @@ function topGenres(events) {
     .slice(0, 3)
     .map(([genre]) => genre);
 }
+
+
+   //Main entry
 
 
 export function analyseUser(userID) {
@@ -219,12 +220,17 @@ export function analyseUser(userID) {
 
   return {
     empty: false,
+
     answers: answers.filter((a) => {
       const r = a.result;
+
+      // Remove null results (Friday night for User 3)
       if (r === null) return false;
+
+      // Remove empty arrays (Every day songs for User 3)
       if (Array.isArray(r)) return r.length > 0;
-      if (r.songs) return r.songs.length > 0;
-      if (r.artists) return r.artists.length > 0;
+
+      // KEEP ALL OBJECTS (songs, artists, streak)
       return true;
     }),
   };
