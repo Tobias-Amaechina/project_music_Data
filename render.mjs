@@ -17,36 +17,39 @@ export function renderResults(summary) {
   }
 
   for (const answer of summary.answers) {
-    const article = document.createElement("article");
-    const question = document.createElement("h3");
-    question.textContent = answer.question;
+    const line = document.createElement("p");
 
-    const output = document.createElement("p");
+    const label = document.createElement("strong");
+    label.textContent = answer.question + ": ";
+    line.append(label);
+
     const result = answer.result;
 
+    let text = "";
+
     if (Array.isArray(result)) {
-      output.textContent = result.join(", ");
+      text = result.join(", ");
     } else if (result.songs) {
-      output.textContent = result.songs.join(", ");
+      text = result.songs.join(", ");
 
       if (result.length !== undefined) {
-        output.textContent += ` (length: ${result.length})`;
+        text += ` (length: ${result.length})`;
       }
 
       if (result.value !== undefined) {
-        output.textContent += ` — ${result.value}`;
+        text += ` — ${result.value}`;
       }
     } else if (result.artists) {
-      output.textContent = result.artists.join(", ");
+      text = result.artists.join(", ");
 
       if (result.value !== undefined) {
-        output.textContent += ` — ${result.value}`;
+        text += ` — ${result.value}`;
       }
     } else {
-      output.textContent = String(result);
+      text = String(result);
     }
 
-    article.append(question, output);
-    results.append(article);
+    line.append(text);
+    results.append(line);
   }
 }
