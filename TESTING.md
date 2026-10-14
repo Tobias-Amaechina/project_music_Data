@@ -88,7 +88,7 @@ This document explains how I tested the requirements of the Music Data Project.
 4. Check the accessibility score and any reported issues.
 5. Navigate the page using the keyboard and check that the dropdown and other interactive elements can be used without a mouse.
 
-**Result:** Was able to navigate the page and select users using keyboard, lighthouse snapshot for the for users scores 14/14, and  navigation score 100%
+**Result:** Was able to navigate the page and select users using keyboard, lighthouse snapshot for the four users scored 14/14, and  navigation scored 100%
 
 ## 7. Deployment
 

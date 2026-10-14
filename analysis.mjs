@@ -1,6 +1,5 @@
 import { getSong, getListenEvents } from "./data.mjs";
 
-
 // Utility helpers
 
 export function countBy(items, getKey) {
@@ -52,8 +51,7 @@ function formatDuration(seconds) {
   return `${s}s`;
 }
 
-
-  // Core analysis
+// Core analysis
 
 
 function mostListenedSong(events, byTime = false) {
@@ -85,7 +83,7 @@ function mostListenedArtist(events, byTime = false) {
   const artists = findMaximumKeys(totals);
   if (artists.length === 0) return null;
 
-  // UI rule: hide counts and durations
+// UI rule: hide counts and durations
   return {
     artists,
     value: undefined,
@@ -170,9 +168,7 @@ function topGenres(events) {
     .map(([genre]) => genre);
 }
 
-
-   //Main entry
-
+//Main entry
 
 export function analyseUser(userID) {
   const events = getListenEvents(userID) ?? [];
@@ -224,13 +220,12 @@ export function analyseUser(userID) {
     answers: answers.filter((a) => {
       const r = a.result;
 
-      // Remove null results (Friday night for User 3)
+// Remove null results (Friday night for User 3)
       if (r === null) return false;
-
-      // Remove empty arrays (Every day songs for User 3)
+// Remove empty arrays (Every day songs for User 3)
       if (Array.isArray(r)) return r.length > 0;
 
-      // KEEP ALL OBJECTS (songs, artists, streak)
+// KEEP ALL OBJECTS (songs, artists, streak)
       return true;
     }),
   };
