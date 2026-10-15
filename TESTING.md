@@ -125,7 +125,7 @@ for user 4:This user didn't listen to any songs.
 
 **Result:** user 2 display pop, did not say "top 3 genres"
 
-## 6. Automated unit tests
+## 6.Unit tests in `analysis.test.mjs'.
 
 **Requirement:** The music analysis functions produce the expected results.
 
